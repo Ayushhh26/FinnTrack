@@ -1,4 +1,13 @@
-import './globals.css'
+"use client"
+import './globals.css';
+
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
+import Navigation from "@/components/Navigation";
+
+import FinanceContextProvider from '@/lib/store/finance-context';
+import AuthContextProvider from '@/lib/store/auth-context';
 
 export const metadata = {
   title: 'Create Next App',
@@ -8,7 +17,16 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AuthContextProvider>
+          <FinanceContextProvider>
+            <ToastContainer />
+              <Navigation />
+              {children}
+            
+          </FinanceContextProvider>
+        </AuthContextProvider>
+      </body>
     </html>
   )
 }

@@ -1,91 +1,139 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from './page.module.css'
+"use client"
+import { useState, useContext, useEffect} from "react";
+import { financeContext } from "@/lib/store/finance-context";
+import { authContext } from "@/lib/store/auth-context";
 
-const inter = Inter({ subsets: ['latin'] })
+import { currencyFormatter } from "@/lib/utils"
+import ExpenseCategoryItem from "@/components/ExpenseCategoryItem"
+
+import AddIncomeModal from "@/components/modals/AddIncomeModal";
+import AddExpensesModal from "@/components/modals/AddExpensesModal";
+import SignIn from "@/components/SignIn";
+
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"
+import { Doughnut } from "react-chartjs-2";
+
+// Firebase
+import { db } from "@/lib/firebase";
+import { collection,addDoc, getDocs, doc, deleteDoc } from "firebase/firestore";
+
+// Icons
+
+import { FaRegTrashAlt } from 'react-icons/fa'
+
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+
+
+
 
 export default function Home() {
+
+  
+  
+
+  const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
+  const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+
+  const [balance, setBalance] = useState(0);
+
+  const { expenses, income } = useContext(financeContext);
+  const { user } = useContext(authContext);
+  
+
+  
+useEffect(() => {
+  const newBalance = income.reduce((total, i) =>{
+    return total + i.amount;
+  }, 0) -
+  expenses.reduce((total,e) => {
+    return total +e.total;
+  }, 0);
+
+  setBalance(newBalance);
+}, [expenses,income]);
+
+
+  if(!user){
+    return <SignIn />
+  }
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
-      </div>
+    <>
+      {/* Add income Modal */}
+      
+      <AddIncomeModal show={showAddIncomeModal} onClose={setShowAddIncomeModal}/>
 
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+      {/* Add Expenses Modal */}
+      <AddExpensesModal
+      show={showAddExpenseModal}
+      onClose={setShowAddExpenseModal}
+      />
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      <main className="container max-w-2xl px-6 mx-auto">
+        <section className="py-3">
+          <small className="text-gray-400 text-md">My Balance</small>
+          <h2 className="text-4xl font-bold">{currencyFormatter(balance)}</h2>
+        </section>
+
+        <section className="flex items-center gap-2 py-3">
+          <button
+            onClick={() => {
+              setShowAddExpenseModal(true)
+            }}
+            className="btn btn-primary">+ Expenses</button>
+          <button onClick={() => {setShowAddIncomeModal(true)}} className="btn btn-primary-outline">+ Income</button>
+        </section>
+
+        {/* Expenses */}
+
+        <section className="py-6">
+          
+          <h3 className="text-2xl">My Expenses</h3>
+
+          <div className="flex flex-col gap-4 mt-6">
+
+            {expenses.map((expense) => {
+              return (
+                <ExpenseCategoryItem color={expense.color}
+                  key={expense.id}
+                  expense={expense}/>
+              )
+            })}
+
+
+
+          </div>
+        </section>
+
+        {/* Chart Section */}
+
+        <section className="py-6">
+        <a id="stats"/>
+          <h3 className="text-2xl">Stats</h3>
+
+          <div className="w-1/2 h-[300] mx-auto">
+            <Doughnut className="h-[300px] w-[300px] " data={{
+              labels: expenses.map(expense => expense.title),
+              datasets: [
+                {
+                  label: "Expenses",
+                  data: expenses.map(expense => expense.total),
+                  backgroundColor: expenses.map(expense => expense.color),
+                  borderColor: ['#18181b'],
+                  borderWidth: 5
+                }
+              ]
+            }
+
+            } />
+          </div>
+
+        </section>
+      </main>
+    </>
   )
 }
