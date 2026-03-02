@@ -1,14 +1,16 @@
 "use client"
 import './globals.css';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-import Navigation from "@/components/Navigation";
-
+import dynamic from 'next/dynamic';
 import FinanceContextProvider from '@/lib/store/finance-context';
 import AuthContextProvider from '@/lib/store/auth-context';
 
+const Navigation = dynamic(() => import('@/components/Navigation'), {
+  ssr: false,
+});
 
 export default function RootLayout({ children }) {
   return (
@@ -17,9 +19,8 @@ export default function RootLayout({ children }) {
         <AuthContextProvider>
           <FinanceContextProvider>
             <ToastContainer />
-              <Navigation />
-              {children}
-            
+            <Navigation />
+            {children}
           </FinanceContextProvider>
         </AuthContextProvider>
       </body>
