@@ -2,12 +2,53 @@
 
 Track your finances with ease. FinnTrack is a personal finance tracker that lets you log income, organize expenses into categories, and visualize your spending with charts, powered by Next.js and Firebase.
 
+## Features
+
+- **Authentication**
+  - Google sign-in with Firebase Auth.
+  - Per-user data isolation (each user sees only their own income and expenses).
+
+- **Income tracking**
+  - Add income entries with amount, description, and timestamp.
+  - See an income history list with delete support.
+  - Balance automatically recomputes when you add or remove income.
+
+- **Expense tracking**
+  - Create customizable expense categories (title + color).
+  - Add expense items to categories; category totals update automatically.
+  - View full expense history per category; delete individual items or whole categories.
+
+- **Time-based views**
+  - Dashboard supports three views:
+    - **This month**
+    - **Last month**
+    - **All time** (original behavior)
+  - Balance, category totals, and charts all respect the selected time filter.
+
+- **Visual stats**
+  - Doughnut chart of expense distribution across categories.
+  - Empty states when there is no data for the selected period.
+
+- **UX & responsiveness**
+  - Responsive layout optimized for mobile and desktop.
+  - Consistent Tailwind-based design system with shared `Button` and `Card` components.
+  - Clear empty states for:
+    - No income entries.
+    - No expense categories.
+    - No expenses in the selected period.
+
+- **Accessibility**
+  - Labeled form inputs with proper `id` / `htmlFor`.
+  - Accessible modals (`role="dialog"`, `aria-modal`, Escape/backdrop to close, focus trap).
+  - Visible focus outlines and reduced-motion support.
+
 ## Tech stack
 
 - **Framework**: Next.js 14 (App Router)
 - **Frontend**: React, Tailwind CSS, React Icons
 - **Backend/data**: Firebase (Auth + Firestore)
 - **Charts**: chart.js + react-chartjs-2
+- **Testing**: Jest, React Testing Library
 
 ## Configuration
 
