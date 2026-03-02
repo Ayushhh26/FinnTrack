@@ -1,12 +1,13 @@
 import { useContext } from 'react';
 import { financeContext } from '@/lib/store/finance-context';
 import Modal from '@/components/Modal'
-import { currencyFormatter } from '@/lib/utils'
+import { currencyFormatter, toJsDate } from '@/lib/utils'
 import { FaRegTrashAlt } from 'react-icons/fa'
 import { toast } from 'react-toastify';
+import Button from "@/components/ui/Button";
 
 
-function ViewExpenseModal({show, onClose, expense}) {
+function ViewExpenseModal({show, onClose, expense, periodLabel}) {
 
     const {deleteExpenseItem, deleteExpenseCategory} = useContext(financeContext);
 
@@ -45,28 +46,37 @@ function ViewExpenseModal({show, onClose, expense}) {
             }
     };
 
+  const items = Array.isArray(expense.items) ? expense.items : [];
+
   return (
     <Modal show={show} onClose={onClose}>
         <div className='flex items-center justify-between'>
-            <h2 className='text-xl'>{expense.title}</h2>
-            <button className='btn btn-danger' onClick={deleteExpenseHandler}>
-                    Delete
-            </button>
+            <div>
+              <h2 className='text-xl'>{expense.title}</h2>
+              {periodLabel && periodLabel !== "All time" && (
+                <p className="mt-1 text-sm text-gray-400">
+                  Dashboard totals show {periodLabel}. This history is all-time.
+                </p>
+              )}
+            </div>
+            <Button variant="danger" onClick={deleteExpenseHandler}>Delete</Button>
         </div>
 
         <div >
             <h3 className='my-4 text-xl'>Expense History</h3>
-            {expense.items.map((item) => {
+            {items.length === 0 && (
+              <p className="text-sm text-gray-400">No expense items yet.</p>
+            )}
+            {items.map((item) => {
+                const createdAt = toJsDate(item.createdAt);
                 return (
                     <div key={item.id} className='flex items-center justify-between'>
-                        <small>{item.createdAt.toMillis ?
-                        new Date(item.createdAt.toMillis()).toISOString() : item.createdAt.toISOString() }
-                        </small>
+                        <small>{createdAt ? createdAt.toISOString() : "—"}</small>
                         <p className='flex items-center gap-2'>
                             {currencyFormatter(item.amount)}
-                            <button onClick={() => {
+                            <button type="button" aria-label="Delete expense item" onClick={() => {
                                 deleteExpenseItemHandler(item);
-                            }}>
+                            }} className="min-h-[44px] min-w-[44px] flex items-center justify-center">
                                 <FaRegTrashAlt/>
                             </button>
                         </p>

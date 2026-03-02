@@ -3,7 +3,7 @@ import { currencyFormatter } from "@/lib/utils";
 
 import ViewExpenseModal from "./modals/ViewExpenseModal";
 
-function ExpenseCategoryItem({ expense }) {
+function ExpenseCategoryItem({ expense, displayTotal, periodLabel }) {
 
     const [showViewExpenseModal, setViewExpenseModal]=useState(false);
     return (
@@ -11,15 +11,16 @@ function ExpenseCategoryItem({ expense }) {
         <ViewExpenseModal
         show={showViewExpenseModal} onClose={setViewExpenseModal}
         expense ={expense}
+        periodLabel={periodLabel}
         
         />
-        <button onClick={() => setViewExpenseModal(true)}>
+        <button type="button" onClick={() => setViewExpenseModal(true)} className="text-left">
             <div className="flex items-center justify-between px-4 py-4 bg-slate-700 rounded-3xl">
                 <div className="flex items-center gap-2">
                     <div className="w-[25px] h-[25px] rounded-full" style={{ backgroundColor: expense.color }} />
                     <h4 className="capitalize">{expense.title}</h4>
                 </div>
-                <p>{currencyFormatter(expense.total)}</p>
+                <p>{currencyFormatter(typeof displayTotal === "number" ? displayTotal : expense.total)}</p>
             </div>
         </button>
         </>

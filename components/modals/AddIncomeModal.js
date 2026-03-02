@@ -5,6 +5,7 @@ import { financeContext } from "@/lib/store/finance-context";
 import { authContext } from "@/lib/store/auth-context";
 import Modal from "@/components/Modal"
 import { toast } from 'react-toastify';
+import Button from "@/components/ui/Button";
 
 
 
@@ -68,22 +69,27 @@ function AddIncomeModal({ show, onClose }) {
      <Modal show={show} onClose={onClose} className="overflow-scroll"> 
      <form onSubmit={addIncomeHandler} className="flex flex-col gap-4">
        <div className="input-group">
-         <label htmlFor="amount">Income Amount</label>
-         <input 
+         <label htmlFor="incomeAmount">Income Amount</label>
+         <input
+           id="incomeAmount"
            type="number" name="amount" ref={amountRef} min={1} step={1} placeholder="Enter Income Amount" required />
        </div>
 
        <div className="input-group">
-         <label htmlFor="description">Description</label>
-         <input 
+         <label htmlFor="incomeDescription">Description</label>
+         <input
+           id="incomeDescription"
            type="text" name="description" ref={descriptionRef} placeholder="Enter Income Description" required />
        </div>
 
-       <button className="btn btn-primary" type="submit">Add Entry</button>
+       <Button type="submit" variant="primary">Add Entry</Button>
      </form>
 
      <div className="flex flex-col gap-4 mt-5 over">
        <h3 className="text-2xl font-bold">Income History</h3>
+       {income.length === 0 && (
+         <p className="text-sm text-gray-400">No income entries yet.</p>
+       )}
 
        {income.map(i => {
          return (
@@ -94,7 +100,7 @@ function AddIncomeModal({ show, onClose }) {
              </div>
                  <p className="flex items-center gap-2">
                    {currencyFormatter(i.amount)}
-                   <button onClick={() => { deleteIncomeEntryHandler(i.id)}}><FaRegTrashAlt/></button>
+                   <button type="button" aria-label="Delete income entry" onClick={() => { deleteIncomeEntryHandler(i.id)}} className="min-h-[44px] min-w-[44px] flex items-center justify-center"><FaRegTrashAlt/></button>
                    
                  </p>
            </div>
