@@ -1,9 +1,21 @@
 import React from "react";
 
-export default function Card({ as: Component = "div", className = "", ...props }) {
+const VARIANT_CLASS = {
+  default: "bg-surface-elevated shadow-card",
+  subtle: "bg-surface",
+};
+
+export default function Card({
+  as: Component = "div",
+  variant = "default",
+  className = "",
+  ...props
+}) {
+  const variantClass = VARIANT_CLASS[variant] ?? VARIANT_CLASS.default;
+
   return (
     <Component
-      className={`rounded-2xl bg-slate-800 p-4 text-gray-300 ${className}`.trim()}
+      className={`rounded-card p-4 text-gray-200 ${variantClass} ${className}`.trim()}
       {...props}
     />
   );

@@ -1,12 +1,12 @@
-import Modal from '@/components/Modal'
-import { useState, useContext, useRef } from 'react'
-import { financeContext } from '@/lib/store/finance-context';
-
+import Modal from "@/components/Modal";
+import { useState, useContext, useRef } from "react";
+import { financeContext } from "@/lib/store/finance-context";
 import { v4 as uuidv4 } from "uuid";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 
-function AddExpensesModal({show, onClose}) {
+function AddExpensesModal({ show, onClose }) {
 
     const [expenseAmount, setExpenseAmount] = useState("");
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -67,88 +67,119 @@ function AddExpensesModal({show, onClose}) {
 
   return (
     <Modal show={show} onClose={onClose}>
-        <div className='input-group'>
-         <label htmlFor="expenseAmount">Enter an Amount</label>
-         <input id="expenseAmount" type="number" min={1} step={1} placeholder='Enter Expense Amount' value={expenseAmount} onChange={(e) => { setExpenseAmount(e.target.value)}}/>
+      <div className="input-group">
+        <Input
+          id="expenseAmount"
+          label="Enter an Amount"
+          type="number"
+          min={1}
+          step={1}
+          placeholder="Enter Expense Amount"
+          value={expenseAmount}
+          onChange={(e) => {
+            setExpenseAmount(e.target.value);
+          }}
+        />
+      </div>
 
-        </div>
+      {/* Expense Categories */}
 
-        {/* Expense Categories */}
-
-
-        {expenseAmount > 0 && (
-        <div className='flex flex-col gap-4 mt-6'>
-
-
-            <div className="flex items-center justify-between">
-            <h3 className="text-xl capitalize">Select Expense Category</h3>
-            <button type="button" onClick={() =>{
+      {expenseAmount > 0 && (
+        <div className="flex flex-col gap-4 mt-6">
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="text-xl font-semibold capitalize">Select Expense Category</h3>
+            <button
+              type="button"
+              onClick={() => {
                 setShowAddExpense(true);
-            }} className="text-lime-400">+ New Category </button>
-            </div>
+              }}
+              className="text-sm font-medium text-primary"
+            >
+              + New Category
+            </button>
+          </div>
 
-            {showAddExpense && (
-                <div className='flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                <label className="text-sm text-gray-300" htmlFor="newCategoryTitle">Title</label>
-                <input id="newCategoryTitle" type="text" placeholder="Enter Title" 
-                ref={titleRef}/>
-                </div>
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                <label className="text-sm text-gray-300" htmlFor="newCategoryColor">Pick color</label>
-                <input id="newCategoryColor" type="color" className="w-20 h-9" ref={colorRef} />
-                <Button variant="outline" onClick={addCategoryHandler}>Create</Button>
-                <Button variant="danger" onClick={() =>{
-                setShowAddExpense(false);
-            }}
-            >Cancel</Button>
-                </div>
+          {showAddExpense && (
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex-1">
+                <Input
+                  id="newCategoryTitle"
+                  label="Title"
+                  placeholder="Enter title"
+                  ref={titleRef}
+                />
+              </div>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                <label
+                  className="text-sm text-gray-300"
+                  htmlFor="newCategoryColor"
+                >
+                  Pick color
+                </label>
+                <input
+                  id="newCategoryColor"
+                  type="color"
+                  className="w-20 h-9 rounded-input border border-border bg-surface-elevated"
+                  ref={colorRef}
+                />
+                <Button variant="outline" size="sm" onClick={addCategoryHandler}>
+                  Create
+                </Button>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => {
+                    setShowAddExpense(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
-            )}
+          )}
 
-        {expenses.map(expense => {
+          {expenses.map((expense) => {
+            const isSelected = expense.id === selectedCategory;
             return (
-                <button
+              <button
                 type="button"
-                aria-pressed={expense.id === selectedCategory}
+                aria-pressed={isSelected}
                 key={expense.id}
                 onClick={() => {
-                    setSelectedCategory(expense.id)
-                }}>
-
-            <div style={{
-                boxShadow : expense.id === selectedCategory ? "1px 1px 4px" : "none",
-            }}
-             className='flex items-center justify-between px-4 py-4 bg-slate-700 rounded-2xl'>
-
-            <div className='flex items-center gap-2'>
-                {/* Colored Circle */}
-                <div className='w-[25px] h-[25px] rounded-full'
-                    style={{
+                  setSelectedCategory(expense.id);
+                }}
+                className="w-full text-left"
+              >
+                <div
+                  className={`flex items-center justify-between px-4 py-4 rounded-card bg-surface-elevated border ${
+                    isSelected ? "border-primary shadow-card" : "border-border"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-[22px] h-[22px] rounded-full"
+                      style={{
                         backgroundColor: expense.color,
-                           
-                    }}/>
-
-                <h4 className='capitalize'>{expense.title}</h4>
-            </div>
-            </div>
-                </button>
-            )
-        })} 
+                      }}
+                    />
+                    <h4 className="capitalize">{expense.title}</h4>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
+      )}
 
-
-        )}
-
-        {expenseAmount > 0 && selectedCategory && (
-            <div className='mt-4'>
-            <Button variant="primary" onClick={addExpenseItemHandler}>Add Expense</Button>
-
-            </div>
-        )}
-
+      {expenseAmount > 0 && selectedCategory && (
+        <div className="mt-6">
+          <Button variant="primary" size="md" onClick={addExpenseItemHandler}>
+            Add Expense
+          </Button>
+        </div>
+      )}
     </Modal>
-  )
+  );
 }
 
 export default AddExpensesModal 

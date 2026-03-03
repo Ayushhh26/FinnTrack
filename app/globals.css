@@ -3,25 +3,78 @@
 @tailwind utilities;
 
 @layer base {
+    :root {
+        --bg: #020617; /* dark slate */
+        --surface: #020617;
+        --surface-elevated: #0f172a;
+        --border: #1f2937;
+        --text: #e5e7eb;
+        --muted: #9ca3af;
+    }
+
     html {
         scroll-behavior: smooth;
     }
     html, body {
-        @apply bg-slate-900 text-white relative;
+        background-color: var(--bg);
+        color: var(--text);
+        position: relative;
         overflow-x: hidden;
     }
 
+    .bg-background {
+        background-color: var(--bg);
+    }
+
+    .bg-surface-elevated {
+        background-color: var(--surface-elevated);
+        color: var(--text);
+    }
+
+    .bg-surface {
+        background-color: var(--surface);
+        color: var(--text);
+    }
+
+    .border-border {
+        border-color: var(--border);
+    }
+
     button {
-        @apply transition-all duration-100;
+        @apply transition-all duration-150;
     }
 
     input {
-        @apply px-4 py-2 bg-slate-600 rounded-xl
+        @apply px-4 py-2 rounded-input border text-sm placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary;
+        background-color: var(--surface-elevated);
+        border-color: var(--border);
+        color: var(--text);
     }
 
     :focus-visible {
         outline: 2px solid rgb(163 230 53); /* lime-400 */
         outline-offset: 2px;
+    }
+
+    /* Light theme overrides via CSS variables */
+    html[data-theme='light'] {
+        --bg: #f3f4f6;
+        --surface: #f3f4f6;
+        --surface-elevated: #ffffff;
+        --border: #e5e7eb;
+        --text: #020617;
+        --muted: #6b7280;
+    }
+
+    html[data-theme='light'] body {
+        background-color: var(--bg);
+        color: var(--text);
+    }
+
+    html[data-theme='light'] .text-gray-200,
+    html[data-theme='light'] .text-gray-300,
+    html[data-theme='light'] .text-gray-400 {
+        color: var(--muted) !important;
     }
 };
 
@@ -36,22 +89,41 @@
 }
 
 @layer utilities {
+    /* Map semantic classes to theme variables so both themes look correct */
+    .bg-background {
+        background-color: var(--bg) !important;
+    }
+
+    .bg-surface-elevated {
+        background-color: var(--surface-elevated) !important;
+        color: var(--text) !important;
+    }
+
+    .bg-surface {
+        background-color: var(--surface) !important;
+        color: var(--text) !important;
+    }
+
+    .border-border {
+        border-color: var(--border) !important;
+    }
+
     .btn{
-        @apply self-start px-4 py-2 text-sm capitalize rounded-xl hover:scale-105;
+        @apply inline-flex items-center justify-center self-start px-4 py-2 text-sm font-medium rounded-button transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed;
     }
 
     .btn-primary{
-        @apply bg-slate-700 border-slate-700 text-lime-400;
+        @apply bg-surface-elevated text-primary border border-border hover:bg-slate-800;
     }
     .btn-primary-outline{
-        @apply border border-lime-400 text-lime-400
+        @apply border border-primary text-primary bg-transparent hover:bg-surface-elevated/60;
     }
 
     .btn-danger{
-        @apply text-white bg-red-600 border-red-600;
+        @apply text-white bg-danger border border-danger hover:bg-red-500;
     }
 
     .input-group{
-        @apply flex flex-col gap-4
+        @apply flex flex-col gap-2;
     }
 };

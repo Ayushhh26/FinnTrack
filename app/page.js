@@ -124,7 +124,7 @@ useEffect(() => {
 
 
       <main className="w-full min-w-0 max-w-2xl mx-auto px-4 sm:px-6">
-        <section className="py-3">
+        <section className="py-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
               <small className="text-gray-400 text-md">My Balance</small>
@@ -132,13 +132,15 @@ useEffect(() => {
               <p className="mt-1 text-sm text-gray-400">Showing {periodLabel}</p>
             </div>
 
-            <div className="flex flex-shrink-0 flex-wrap items-center justify-center sm:justify-end gap-2 rounded-xl bg-slate-800 p-1 w-full sm:w-auto">
+            <div className="flex flex-shrink-0 flex-wrap items-center justify-center sm:justify-end gap-2 rounded-button bg-surface-elevated p-1 w-full sm:w-auto border border-border">
               <button
                 type="button"
                 aria-pressed={monthFilter === "this"}
                 onClick={() => setMonthFilter("this")}
-                className={`px-3 py-2 text-sm rounded-lg transition-colors ${
-                  monthFilter === "this" ? "bg-slate-700 text-lime-300" : "text-gray-300"
+                className={`px-3 py-2 text-sm rounded-button transition-colors ${
+                  monthFilter === "this"
+                    ? "bg-surface text-primary"
+                    : "text-gray-300 hover:bg-surface"
                 }`}
               >
                 This month
@@ -147,8 +149,10 @@ useEffect(() => {
                 type="button"
                 aria-pressed={monthFilter === "last"}
                 onClick={() => setMonthFilter("last")}
-                className={`px-3 py-2 text-sm rounded-lg transition-colors ${
-                  monthFilter === "last" ? "bg-slate-700 text-lime-300" : "text-gray-300"
+                className={`px-3 py-2 text-sm rounded-button transition-colors ${
+                  monthFilter === "last"
+                    ? "bg-surface text-primary"
+                    : "text-gray-300 hover:bg-surface"
                 }`}
               >
                 Last month
@@ -157,8 +161,10 @@ useEffect(() => {
                 type="button"
                 aria-pressed={monthFilter === "all"}
                 onClick={() => setMonthFilter("all")}
-                className={`px-3 py-2 text-sm rounded-lg transition-colors ${
-                  monthFilter === "all" ? "bg-slate-700 text-lime-300" : "text-gray-300"
+                className={`px-3 py-2 text-sm rounded-button transition-colors ${
+                  monthFilter === "all"
+                    ? "bg-surface text-primary"
+                    : "text-gray-300 hover:bg-surface"
                 }`}
               >
                 All time
@@ -167,7 +173,7 @@ useEffect(() => {
           </div>
         </section>
 
-        <section className="flex flex-wrap items-center gap-2 py-3 w-full">
+        <section className="flex flex-wrap items-center gap-2 py-6 w-full">
           <Button
             onClick={() => {
               setShowAddExpenseModal(true)
@@ -227,21 +233,30 @@ useEffect(() => {
               </p>
             </Card>
           ) : (
-          <div className="w-full flex flex-col items-center mt-4">
-            <Doughnut className="h-[260px] w-[260px] sm:h-[300px] sm:w-[300px] max-w-full" data={{
-              labels: expenses.map(expense => expense.title),
-              datasets: [
-                {
-                  label: monthFilter === "all" ? "Expenses (all time)" : "Expenses (month)",
-                  data: expensesWithDisplayTotals.map(({ total }) => total),
-                  backgroundColor: expenses.map(expense => expense.color),
-                  borderColor: ['#18181b'],
-                  borderWidth: 5
-                }
-              ]
-            }
-
-            } />
+          <div className="w-full flex flex-col items-center mt-6">
+            <div
+              className="h-[340px] w-[340px] sm:h-[365px] sm:w-[365px] md:h-[390px] md:w-[390px]"
+              style={{ minWidth: 0 }}
+            >
+              <Doughnut
+                data={{
+                  labels: expenses.map(expense => expense.title),
+                  datasets: [
+                    {
+                      label: monthFilter === "all" ? "Expenses (all time)" : "Expenses (month)",
+                      data: expensesWithDisplayTotals.map(({ total }) => total),
+                      backgroundColor: expenses.map(expense => expense.color),
+                      borderColor: ['#18181b'],
+                      borderWidth: 5
+                    }
+                  ]
+                }}
+                options={{
+                  maintainAspectRatio: false,
+                  responsive: true,
+                }}
+              />
+            </div>
           </div>
           )}
 
