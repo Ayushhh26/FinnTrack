@@ -123,16 +123,16 @@ useEffect(() => {
       />
 
 
-      <main className="container max-w-2xl px-4 sm:px-6 mx-auto">
+      <main className="w-full min-w-0 max-w-2xl mx-auto px-4 sm:px-6">
         <section className="py-3">
-          <div className="flex items-start justify-between gap-4">
-            <div>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0">
               <small className="text-gray-400 text-md">My Balance</small>
               <h2 className="text-4xl font-bold">{currencyFormatter(balance)}</h2>
               <p className="mt-1 text-sm text-gray-400">Showing {periodLabel}</p>
             </div>
 
-            <div className="flex items-center gap-2 rounded-xl bg-slate-800 p-1">
+            <div className="flex flex-shrink-0 flex-wrap items-center justify-center sm:justify-end gap-2 rounded-xl bg-slate-800 p-1 w-full sm:w-auto">
               <button
                 type="button"
                 aria-pressed={monthFilter === "this"}
@@ -167,7 +167,7 @@ useEffect(() => {
           </div>
         </section>
 
-        <section className="flex flex-wrap items-center gap-2 py-3">
+        <section className="flex flex-wrap items-center gap-2 py-3 w-full">
           <Button
             onClick={() => {
               setShowAddExpenseModal(true)
@@ -227,8 +227,8 @@ useEffect(() => {
               </p>
             </Card>
           ) : (
-          <div className="w-full sm:w-2/3 md:w-1/2 mx-auto">
-            <Doughnut className="h-[280px] w-[280px] sm:h-[320px] sm:w-[320px]" data={{
+          <div className="w-full flex flex-col items-center mt-4">
+            <Doughnut className="h-[260px] w-[260px] sm:h-[300px] sm:w-[300px] max-w-full" data={{
               labels: expenses.map(expense => expense.title),
               datasets: [
                 {

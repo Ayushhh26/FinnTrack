@@ -6,12 +6,13 @@
     html {
         scroll-behavior: smooth;
     }
-    body {
+    html, body {
         @apply bg-slate-900 text-white relative;
+        overflow-x: hidden;
     }
 
     button {
-        @apply  hover:scale-110 transition-all duration-100;
+        @apply transition-all duration-100;
     }
 
     input {
@@ -36,7 +37,7 @@
 
 @layer utilities {
     .btn{
-        @apply self-start px-4 py-2 text-sm capitalize rounded-xl;
+        @apply self-start px-4 py-2 text-sm capitalize rounded-xl hover:scale-105;
     }
 
     .btn-primary{

@@ -64,7 +64,7 @@ function Modal({show, onClose, children, className = ""}) {
     <button
       type="button"
       aria-label="Close dialog"
-      className="absolute inset-0 bg-black/40 cursor-default"
+      className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-default"
       onClick={() => onClose(false)}
       tabIndex={-1}
     />
@@ -72,7 +72,7 @@ function Modal({show, onClose, children, className = ""}) {
       role="dialog"
       aria-modal="true"
       ref={dialogRef}
-      className={`relative container py-6 px-4 mx-auto max-w-2xl max-h-[80vh] rounded-3xl bg-slate-800 overflow-y-auto ${className}`}
+      className={`relative container py-6 px-4 mx-auto max-w-2xl max-h-[80vh] rounded-3xl bg-slate-800 shadow-2xl shadow-black/60 ring-1 ring-white/10 overflow-y-auto overflow-x-hidden ${className}`}
     >
       <button
         onClick={() => {

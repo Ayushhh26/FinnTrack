@@ -11,7 +11,7 @@ function Navigation() {
   const {user, loading, logout} = useContext(authContext);
 
   return (
-    <header className='container max-w-2xl px-4 sm:px-6 py-6 mx-auto' >
+    <header className="w-full min-w-0 max-w-2xl mx-auto px-4 sm:px-6 py-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       {/* User Info */}
 
